@@ -1,0 +1,10 @@
+git add ...
+git add ...
+
+git commit  # do not forget commit description
+
+git pull <address> <branch>
+
+git push <address> <branch>
+<username>
+<password>
