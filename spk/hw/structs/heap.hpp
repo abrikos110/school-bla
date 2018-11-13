@@ -14,7 +14,7 @@ struct heap {
 
     void insert(const T &value);
     T pop_max();
-    void heap_from(T *array);
+    void insert_from(int n, T *array);
 };
 
 #include "heap.cpp"

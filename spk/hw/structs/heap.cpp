@@ -9,7 +9,7 @@ heap<T>::heap () {
 template<typename T>
 void heap<T>::sift_up(int index) {
     int i = index;
-    while (i > 0 || data[i] > data[(i-1)/2]) {
+    while (i > 0 && data[i] > data[(i-1)/2]) {
         std::swap(data[i], data[(i-1)/2]);
         i = (i-1)/2;
     }
@@ -28,15 +28,32 @@ T heap<T>::pop_max() {
     T ans = data[0];
     data[0] = data.pop();
     int i = 0;
-    while (2*i+1 >= data.size)
-        if (2*i+2 < data.size && data[2*i+2] > data[2*i+1]) {
-            std::swap(data[i], data[2*i+2]);
-            i = 2*i+2;
-        }
-        else if (2*i+1 < data.size) {
-            std::swap(data[i], data[2*i+1]);
-            i = 2*i+1;
-        }
+    while (2*i+1 < data.size) {
+        int ix = 2*i+2;
+        if (2*i+2 >= data.size || data[2*i+2] < data[2*i+1])
+            ix = 2*i+1;
+        if (data[ix] <= data[i])
+            break;
+        std::swap(data[i], data[ix]);
+        i = ix;
+    }
+    return ans;
+}
+
+template<typename T>
+void heap<T>::insert_from(int n, T *array) {
+    for (T *p = array; p < array + n; ++p)
+        data.insert(*p);
+    n = data.size;
+    int j = 1;
+    while (j < n+1)
+        j <<= 1;
+    while (j > 1) {
+        for (int i = std::min(j, n)-1; i > 0; --i)
+            if (data[i] > data[(i-1)/2])
+                std::swap(data[i], data[(i-1)/2]);
+        j >>= 1;
+    }
 }
 
 #endif

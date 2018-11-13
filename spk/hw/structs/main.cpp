@@ -49,7 +49,19 @@ int rnd(int n) {
     return (std::rand()+std::rand()*(RAND_MAX+1ll)) % n;
 }
 
-const int N = 100'000;
+template<typename T>
+void print_heap(heap<T> &hp) {
+    int j = 1;
+    for (int i = 0; i < hp.data.size; ++i) {
+        if ((i+1) & j) {
+            std::cout << "\n";
+            j <<= 1;
+        }
+        std::cout << hp.data[i] << " ";
+    }
+}
+
+const int N = 1000;
 int *A = nullptr;
 
 list<int> lst;
@@ -61,6 +73,7 @@ dyn_array<int> vec;
 heap<int> hp;
 
 long long int tp;
+int num;
 
 int main() {
     int __a = time_ns() % (1<<30); std::srand(__a);
@@ -76,7 +89,7 @@ int main() {
         A[i] = rnd(N);
     std::cout << time_ns(tp) / 1e9 << "\n";
 
-    // treap =======================================
+    /*// treap =======================================
     std::cout << "\n\nInserting numbers from A to treap\n  time: ";
     tp = time_ns();
     for (int i = 0; i < N; ++i)
@@ -89,7 +102,7 @@ int main() {
     tp = time_ns() - tp;
     std::cout << max_depth << "\n  time: " << tp/1e9 << "\n";
 
-    int num = N;
+    num = N;
     std::cout << "Checking if " << pretty(num)
               << " random numbers are in treap\n";
     int cnt = 0;
@@ -166,6 +179,39 @@ int main() {
             return 32;
     std::cout << time_ns(tp) / 1e9 << "\n";
     // dyn_array ===================================
+    */
+    // heap ========================================
+    num = N/2;
+    std::cout << "\n\nInserting " << pretty(num)
+              << " numbers to heap by iterating\n  time: ";
+    tp = time_ns();
+    for (int i = 0; i < num; ++i)
+        hp.insert(A[i]);
+    std::cout << time_ns(tp) / 1e9 << "\n";
+
+    /*std::cout << "Inserting " << pretty(N-num)
+              << " numbers to heap with O(n) algorithm\n  time: ";
+    tp = time_ns();
+    hp.insert_from(N-num, A+num);
+    std::cout << time_ns(tp) / 1e9 << "\n";*/
+
+    /*for (int ii = 0; ii < 2; ++ii) {
+        print_heap(hp);
+        std::cout << "</LAYERS>\n";
+        hp.pop_max();
+    }*/
+
+
+    int last = INT_MAX;
+    for (int i = 0; i < N; ++i) {
+        int cur = hp.pop_max();
+        if (cur > last) {
+            std::cout << "_" << i << " " << cur << "\n";;
+            //goto __exit;
+        }
+        last = cur;
+    }
+    // heap ========================================
 
     std::cout << "\n\nDeleting A\n  time: ";
     tp = time_ns();
