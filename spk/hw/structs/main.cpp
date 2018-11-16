@@ -203,8 +203,9 @@ int main() {
 
 
     int last = INT_MAX;
-    for (int i = 0; i < N; ++i) {
+    for (int i = 0; i < num; ++i) {
         int cur = hp.pop_max();
+        //print_heap(hp);
         if (cur > last) {
             std::cout << "_" << i << " " << cur << "\n";;
             //goto __exit;
