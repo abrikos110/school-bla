@@ -13,6 +13,7 @@ struct dyn_array {
     ~dyn_array();
 
     void resize(int reserved);
+    void clear();
     void insert(const T &value, int index = -1);
     T pop(int index = -1);
     T& operator [] (int index);

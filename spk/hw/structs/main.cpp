@@ -12,6 +12,7 @@
 #include "treap.hpp"
 #include "dyn_array.hpp"
 #include "heap.hpp"
+#include "hash_string.hpp"
 
 long long int time_ns(long long int tp = 0) {
     return
@@ -72,6 +73,7 @@ sorted_array<int> arr;
 treap<int> trp;
 dyn_array<int> vec;
 heap<int> hp;
+hash_string<> hs;
 
 long long int tp;
 int num, cnt, max_depth;

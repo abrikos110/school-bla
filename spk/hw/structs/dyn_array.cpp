@@ -23,6 +23,13 @@ void dyn_array<T>::resize(int reserved) {
 }
 
 template<typename T>
+void dyn_array<T>::clear() {
+    delete [] data;
+    data = new T[reserved = 16];
+    size = 0;
+}
+
+template<typename T>
 void dyn_array<T>::insert(const T &value, int index) {
     if (index < 0)
         index += size + 1;
