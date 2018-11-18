@@ -11,10 +11,11 @@ struct heap {
     heap();
 
     void sift_up(int index);
+    void sift_down(int index);
 
     void insert(const T &value);
     T pop_max();
-    void insert_from(int n, T *array);
+    void insert_from(T *begin, T *end);
 };
 
 #include "heap.cpp"

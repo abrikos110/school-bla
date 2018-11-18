@@ -3,6 +3,7 @@
 #include <cstdlib>
 #include <vector>
 #include <algorithm>
+#include <climits>
 
 #include "list.hpp"
 #include "stack.hpp"
@@ -45,8 +46,8 @@ std::string pretty(int n) {
     return s;
 }
 
-int rnd(int n) {
-    return (std::rand()+std::rand()*(RAND_MAX+1ll)) % n;
+int rnd() {
+    return (std::rand()+std::rand()*(RAND_MAX+1ll));
 }
 
 template<typename T>
@@ -61,7 +62,7 @@ void print_heap(heap<T> &hp) {
     }
 }
 
-const int N = 1000;
+const int N = 1'000'000;
 int *A = nullptr;
 
 list<int> lst;
@@ -73,12 +74,13 @@ dyn_array<int> vec;
 heap<int> hp;
 
 long long int tp;
-int num;
+int num, cnt, max_depth;
 
-int main() {
+int main(int argc, char **args) {
     int __a = time_ns() % (1<<30); std::srand(__a);
 
-    std::cout << "\nAllocating memory for A[" << pretty(N) << "]\n  time: ";
+    std::cout << "\nAllocating memory for A[" << pretty(N)
+              << "]\n  time: ";
     tp = time_ns();
     A = new int[N];
     std::cout << time_ns(tp) / 1e9 << "\n";
@@ -86,10 +88,10 @@ int main() {
     std::cout << "Filling array A with random numbers\n  time: ";
     tp = time_ns();
     for (int i = 0; i < N; ++i)
-        A[i] = rnd(N);
+        A[i] = rnd()%N;
     std::cout << time_ns(tp) / 1e9 << "\n";
 
-    /*// treap =======================================
+    // treap =======================================
     std::cout << "\n\nInserting numbers from A to treap\n  time: ";
     tp = time_ns();
     for (int i = 0; i < N; ++i)
@@ -98,26 +100,26 @@ int main() {
 
     std::cout << "Counting max depth of treap = ";
     tp = time_ns();
-    int max_depth = treap_max_depth<int>(trp.root);
+    max_depth = treap_max_depth<int>(trp.root);
     tp = time_ns() - tp;
     std::cout << max_depth << "\n  time: " << tp/1e9 << "\n";
 
     num = N;
     std::cout << "Checking if " << pretty(num)
               << " random numbers are in treap\n";
-    int cnt = 0;
+    cnt = 0;
     tp = time_ns();
     for (int i = 0; i < num; ++i)
-        cnt += trp.contains(rnd(N));
+        cnt += trp.contains(rnd()%N);
     std::cout << "  time: " << time_ns(tp) / 1e9
-              << "\n  proportion of numbers in treap: " << cnt / 1. / num
-              << "\n    // it is approximately 1-1/e, e is Euler's number!\n";
+              << "\n  proportion of numbers in treap: "
+              << cnt / 1. / num << "\n";
 
     num = N/2;
     std::cout << "Deleting " << pretty(num) << " numbers in cycle\n";
     tp = time_ns();
     for (int i = 0; i < num; ++i)
-        trp.remove(A[rnd(N-1)]);
+        trp.remove(A[rnd()%(N-1)]);
     std::cout << "  time: " << time_ns(tp) / 1e9 << "\n";
 
     std::cout << "Deleting " << pretty(N - num)
@@ -129,7 +131,8 @@ int main() {
     // treap =======================================
 
     // list ========================================
-    std::cout << "\n\nInserting numbers from A to linked list\n  time: ";
+    std::cout
+        << "\n\nInserting numbers from A to linked list\n  time: ";
     tp = time_ns();
     for (int i = 0; i < N; ++i)
         lst.insert(lst.end(), A[i]);
@@ -166,7 +169,8 @@ int main() {
     // stack =======================================
 
     // dyn_array ===================================
-    std::cout << "\n\nInserting numbers from A to dynamic array\n  time: ";
+    std::cout
+        << "\n\nInserting numbers from A to dynamic array\n  time: ";
     tp = time_ns();
     for (int i = 0; i < N; ++i)
         vec.insert(A[i]);
@@ -179,7 +183,7 @@ int main() {
             return 32;
     std::cout << time_ns(tp) / 1e9 << "\n";
     // dyn_array ===================================
-    */
+
     // heap ========================================
     num = N/2;
     std::cout << "\n\nInserting " << pretty(num)
@@ -189,11 +193,11 @@ int main() {
         hp.insert(A[i]);
     std::cout << time_ns(tp) / 1e9 << "\n";
 
-    /*std::cout << "Inserting " << pretty(N-num)
+    std::cout << "Inserting " << pretty(N-num)
               << " numbers to heap with O(n) algorithm\n  time: ";
     tp = time_ns();
-    hp.insert_from(N-num, A+num);
-    std::cout << time_ns(tp) / 1e9 << "\n";*/
+    hp.insert_from(A+num, A+N);
+    std::cout << time_ns(tp) / 1e9 << "\n";
 
     /*for (int ii = 0; ii < 2; ++ii) {
         print_heap(hp);
@@ -201,17 +205,16 @@ int main() {
         hp.pop_max();
     }*/
 
-
+    std::cout << "Popping all numbers from heap\n  time: ";
+    tp = time_ns();
     int last = INT_MAX;
-    for (int i = 0; i < num; ++i) {
+    for (int i = 0; i < N; ++i) {
         int cur = hp.pop_max();
-        //print_heap(hp);
-        if (cur > last) {
-            std::cout << "_" << i << " " << cur << "\n";;
-            //goto __exit;
-        }
+        if (cur > last)
+            std::cerr << "_" << i << " " << cur << "\n";;
         last = cur;
     }
+    std::cout << time_ns(tp) / 1e9 << "\n";
     // heap ========================================
 
     std::cout << "\n\nDeleting A\n  time: ";
