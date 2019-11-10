@@ -26,7 +26,8 @@ comp_args = (args[1 + args.index('-C')]
 
 cmd = ([compiler, prog, '-S', '-o', '-']
           + comp_args.split())
-run = subprocess.run(cmd, capture_output=True)
+run = subprocess.run(cmd, stdout=subprocess.PIPE,
+                    stderr=subprocess.PIPE)
 
 out = str(run.stdout, 'utf-8')
 out = out.split('\n')
